@@ -21,7 +21,7 @@ def get_client(db, cpf: str):
     return client
 
 def add_order(db, cpf: str, dish_items: list):
-    order = Order(client_cpf=cpf, order_time=datetime.utcnow())
+    order = Order(cliente_cpf = cpf, order_time=datetime.utcnow())
     db.add(order)
     db.commit()
     db.refresh(order)
@@ -52,7 +52,7 @@ def add_dish(db: Session, name: str, price: int):
     return dish
 
 
-def delete_order(db, order_id: int):
+def delete_order(db, order_id: int) -> bool:
     order = db.query(Order).filter(Order.id == order_id).first()
     if order:
         db.delete(order)
@@ -60,13 +60,13 @@ def delete_order(db, order_id: int):
         return True
     return False
 
-def delete_client(db, cpf: str):
+def delete_client(db, cpf: str) -> bool:
     client = db.query(Client).filter(Client.cpf == cpf).first()
-    if client:
+    if client: #if the client does exist in the db
         db.delete(client)
         db.commit()
         return True
     return False
 
 def get_client_orders(db, cpf: str):
-    return db.query(Order).filter(Order.client_cpf == cpf).all()
+    return db.query(Order).filter(Order.cliente_cpf == cpf).all() #returns a list with ORM objects or an empty list in case there are no orders

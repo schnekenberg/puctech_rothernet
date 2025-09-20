@@ -1,7 +1,5 @@
 # conversions/wav_to_txt.py
 
-# so e necessario importar os para os testes
-import os
 #imports importantes para o funcionamente
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -23,16 +21,39 @@ def transcrever_audio(caminho_arquivo_wav):
     except Exception as e:
         return f"Ocorreu um erro durante a transcricao: {e}"
 
-# Para testes:
-if __name__ == '__main__':
-    caminho_teste = "digite_o_nome_do_arquivo.wav" 
 
-    if os.path.exists(caminho_teste):
-        print(f"Testando a funcao com o arquivo: {caminho_teste}")
-        resultado_teste = transcrever_audio(caminho_teste)
+# para testes:
+if __name__ == '__main__':
+    import os
+
+    ARQUIVO_PADRAO = "teste.wav"
+
+    print("Teste do modulo 'wav_to_txt.py'")
+
+    prompt = f"Digite o nome do arquivo (ou pressione Enter para usar '{ARQUIVO_PADRAO}'): "
+    nome_do_arquivo_de_audio = input(prompt)
+
+    # Se o usuario apenas pressionou Enter, a string sera vazia.
+    if not nome_do_arquivo_de_audio:
+        nome_do_arquivo_de_audio = ARQUIVO_PADRAO
+        print(f"Nenhum arquivo inserido. Usando o padrao: {ARQUIVO_PADRAO}")
+
+
+    diretorio_atual = os.path.dirname(__file__)
+    pasta_raiz_do_projeto = os.path.dirname(diretorio_atual)
+    caminho_do_audio_teste = os.path.join(pasta_raiz_do_projeto, "test_data", nome_do_arquivo_de_audio)
+
+
+    # Verifica se o arquivo realmente existe
+    if os.path.exists(caminho_do_audio_teste):
+        print("\nArquivo de teste encontrado! Iniciando a transcricao...")
         
+        resultado_teste = transcrever_audio(caminho_do_audio_teste)
+
         print("\n--- Resultado do Teste ---")
         print(resultado_teste)
         print("--------------------------")
     else:
-        print(f"\nAVISO: Arquivo de teste '{caminho_teste}' nao encontrado.  :(")
+        print("\nERRO: Arquivo de teste nao encontrado!")
+        print("Por favor, verifique se:")
+        print(f" O arquivo '{nome_do_arquivo_de_audio}' esta dentro desta pasta.")

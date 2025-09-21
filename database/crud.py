@@ -1,6 +1,12 @@
 from sqlalchemy.orm import Session
-from models import Client, Order, Dish, OrderItem
+# from models import Client, Order, Dish, OrderItem
 from datetime import datetime
+# from database.models import Client, Order, Dish, OrderItem
+# from .session import SessionLocal
+
+from database.models import Client, Order, Dish, OrderItem
+from database.session import SessionLocal
+
 
 #add a new client by cpf and return it
 def add_client(db, cpf : str):

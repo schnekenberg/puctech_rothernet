@@ -1,5 +1,4 @@
-
-# def get_cpf(message : str) -> int: 
+import re
     
 
 def is_interaction_over(message : str) -> bool:
@@ -32,6 +31,16 @@ def get_order_id(message: str) -> int | None:
                 return int(next_word)
     return None
 
+def get_user_id(message : str) -> str | None: 
+    all_numbers = re.findall(r'\d+', message)
+    if not all_numbers:
+        return None
 
+    possible_numbers = [num for num in all_numbers if len(num) <= 11]
+    if not possible_numbers:
+        return None
+
+    user_id = max(possible_numbers, key=len)
+    return user_id
 
         

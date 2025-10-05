@@ -63,8 +63,8 @@ def main():
     # testagem do agente em "conversa"
     while True:
         texto_query = input("**Cliente:** ").strip()
-        if texto_query.lower() in ["sair"]:
-            print("**Agente virtual:** Volte sempre!")
+        if texto_query.lower() in ["sair", "crédito", "débito", "dinheiro físico", "cartão de crédito", "cartão de débito"]:
+            print("**Agente virtual:** O pagamento foi realizado com sucesso. Voltarei com seu pedido em breve!")
             break
 
         # faz a busca por similaridades na database
@@ -95,4 +95,5 @@ if __name__ == "__main__":
 
 
 # diminuir/compactar o tamanho do contexto
+
 

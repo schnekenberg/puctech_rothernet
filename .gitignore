@@ -1,0 +1,14 @@
+# Unity
+Library/
+Temp/
+Obj/
+Build/
+Logs/
+UserSettings/
+MemoryCaptures/
+*.apk
+*.aab
+*.exe
+*.dll
+*.dylib
+*.so

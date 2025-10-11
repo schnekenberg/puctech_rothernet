@@ -4,9 +4,9 @@ from database.models import Client, Order, Dish, OrderItem
 
 db = SessionLocal()
 
-#Add client
-# new_clieadd_client(db, "11779221")
-# print("client added")nt = crud.
+#Add clients
+new_client = crud.add_client(db, "11779221")
+print("client added")
 
 #Delete Client
 # is_client_deleted = crud.delete_client(db,"11779221")

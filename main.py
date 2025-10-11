@@ -1,12 +1,15 @@
+import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+
 from database.session import SessionLocal
 from database import crud
 from conversions.txt_to_wav import text_to_wav_pt
-from conversions.audio_to_text import audio_to_text
+from conversions.wav_to_txt import transcrever_audio
 from ai.ai_logic import ai_respond
-from utils.conversation_helpers import is_conversation_over, extract_order_id
+from utils.conversation_helpers import is_conversation_over
 from getters.get_methods import get_order_id
+
 app = FastAPI()
 
 app.add_middleware(
@@ -17,9 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Keep track of active WebSocket connections per user
-active_connections = {}
-
+# Gerencia conexões WebSocket ativas
 class ConnectionManager:
     def __init__(self):
         self.connections = {}
@@ -37,6 +38,9 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
+os.makedirs("audios/received_audio", exist_ok=True)
+os.makedirs("audios/audio_responses", exist_ok=True)
+
 @app.websocket("/ws/audio/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
     db = SessionLocal()
@@ -44,32 +48,39 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 
     try:
         while True:
+            # 1. Recebe áudio do Unity
             audio_bytes = await websocket.receive_bytes()
-            
-            #  Convert audio to text
+            tmp_file_path = f"audios/received_audio/{client_id}.wav"
+            with open(tmp_file_path, "wb") as f:
+                f.write(audio_bytes)
+
+            # 2. Converte áudio em texto
             user_text = transcrever_audio(tmp_file_path)
 
-            # Store or update client session in DB
+            # 3. Cria ou atualiza cliente no banco
             client = crud.get_client(db, client_id)
             if client == -1:
                 client = crud.add_client(db, client_id)
 
-            # 3AI generates response
-            ai_text = ai_respond(user_text)
+            # 4. IA gera resposta
+            ai_text = ai_response(user_text)  #nao sei o nome da funcao mas é só pra saber o fluxo
 
-            # 4Extract order ID if present
+            # 5. Detecta ID de pedido se houver
             order_id = get_order_id(user_text)
             if order_id:
                 print(f"Detected order ID: {order_id}")
 
-            # Convert AI text to audio
-            response_wav_path = text_to_wav_pt(ai_text, output_path=f"responses/{client_id}.wav")
-            with open(audio_file_path, "rb") as f:
+            # 6. Converte resposta da IA em áudio
+            response_wav_path = f"audios/audio_responses/{client_id}.wav"
+            text_to_wav_pt(ai_text, output_path=response_wav_path)
+            with open(response_wav_path, "rb") as f:
                 audio_data = f.read()
+
+            # 7. Envia áudio de volta ao cliente
             await manager.send_audio(client_id, audio_data)
 
-            #  Check if conversation is over
-            if is_conversation_over(user_text):
+            # 8. Verifica se a conversa terminou
+            if is_interaction_over(user_text):
                 print(f"Conversation ended for {client_id}")
                 break
 

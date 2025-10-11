@@ -26,20 +26,23 @@ def get_client(db, cpf: str):
         return -1 #This is just an exception handling for now
     return client
 
+
 def add_order(db, cpf: str, dish_items: list):
-    order = Order(cliente_cpf = cpf, order_time=datetime.utcnow())
+    order = Order(cliente_cpf=cpf, data_pedido=datetime.utcnow())
     db.add(order)
     db.commit()
     db.refresh(order)
+    
     items = []
-
-    for dish_id, quantity in dish_items:
-        item = OrderItem(order_id=order.id, dish_id=dish_id, quantity=quantity)
+    for prato_id, quantidade in dish_items:
+        item = OrderItem(pedido_id=order.id, prato_id=prato_id, quantidade=quantidade)
         items.append(item)
+    
     db.add_all(items)
     db.commit()
     
-    return order
+    return order.id
+
 def get_order_items(db, order_id: int):
     return db.query(OrderItem).filter(OrderItem.order_id == order_id).all()
 

@@ -46,12 +46,12 @@ Você deve responder a pergunta do cliente utilizando somente e apenas o context
 """
 
 class ServicoIA:
-    # Singleton que carrega Chroma, embeddings e modelo uma única vez
+    # singleton que carrega ChromaDB, embeddings e modelo uma única vez
     _instance = None
     _lock = threading.Lock()
 
     def __init__(self):
-        # carregamento banco de dados, modelo da IA e template do prompt
+        # carrega banco de dados, modelo da IA e template do prompt
         emb = OpenAIEmbeddings()
         self.db = Chroma(persist_directory = CHROMA_CAMINHO, embedding_function = emb)
         self.model = ChatOpenAI(model = "gpt-4o-mini")

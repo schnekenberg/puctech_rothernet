@@ -9,6 +9,9 @@ from conversions.wav_to_txt import transcrever_audio
 from ai.ai_logic import ai_respond
 from utils.conversation_helpers import is_conversation_over
 from getters.get_methods import get_order_id
+from services.ia_service import ServicoIA 
+from services.memoria_conversa import MemoriaConversa
+
 
 app = FastAPI()
 
@@ -24,13 +27,16 @@ app.add_middleware(
 class ConnectionManager:
     def __init__(self):
         self.connections = {}
+        self.memories = {}  # memória por cliente
 
     async def connect(self, websocket: WebSocket, client_id: str):
         await websocket.accept()
         self.connections[client_id] = websocket
+        self.memories[client_id] = MemoriaConversa()
 
     def disconnect(self, client_id: str):
         self.connections.pop(client_id, None)
+        self.memories.pop(client_id, None)
 
     async def send_audio(self, client_id: str, audio_bytes: bytes):
         if client_id in self.connections:
@@ -45,6 +51,7 @@ os.makedirs("audios/audio_responses", exist_ok=True)
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
     db = SessionLocal()
     await manager.connect(websocket, client_id)
+    ia = ServicoIA.instance()  # Singleton LangChain AI service
 
     try:
         while True:
@@ -56,6 +63,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 
             # 2. Converte áudio em texto
             user_text = transcrever_audio(tmp_file_path)
+            print(f"[{client_id}] User said: {user_text}") #teste
 
             # 3. Cria ou atualiza cliente no banco
             client = crud.get_client(db, client_id)
@@ -63,7 +71,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 client = crud.add_client(db, client_id)
 
             # 4. IA gera resposta
-            ai_text = ai_response(user_text)  #nao sei o nome da funcao mas é só pra saber o fluxo
+            memoria = manager.memories[client_id]
+            ai_text = ia.responder(user_text, memoria)
+            print(f"[{client_id}] AI responded: {ai_text}")
 
             # 5. Detecta ID de pedido se houver
             order_id = get_order_id(user_text)

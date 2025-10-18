@@ -1,13 +1,13 @@
 import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-
+import base64
 from database.session import SessionLocal
 from database import crud
 from conversions.txt_to_wav import text_to_wav_pt
 from conversions.wav_to_txt import transcrever_audio
 from ai.ai_logic import ai_respond
-from utils.conversation_helpers import is_conversation_over
+from utils.conversation_helpers import is_interaction_over
 from getters.get_methods import get_order_id
 from services.ia_service import ServicoIA 
 from services.memoria_conversa import MemoriaConversa
@@ -87,12 +87,19 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 audio_data = f.read()
 
             # 7. Envia áudio de volta ao cliente
-            await manager.send_audio(client_id, audio_data)
+            finished = is_interaction_over(user_text)
+            audio_base64 = base64.b64encode(audio_data).decode("utf-8")
+            message = {
+                "audio": audio_base64,   # áudio convertido para base64
+                "finished": finished,
+            }
 
+            await websocket.send_json(message)
             # 8. Verifica se a conversa terminou
-            if is_interaction_over(user_text):
+            if finished:
                 print(f"Conversation ended for {client_id}")
                 break
+        
 
     except WebSocketDisconnect:
         print(f"Client {client_id} disconnected")

@@ -116,7 +116,7 @@ namespace UnityEngine.XR.Templates.MR
             var gravador = Object.FindAnyObjectByType<GravacaoDeVoz>();
             if (gravador != null)
             {
-                gravador.AlterarGravacao(ctx);
+                gravador.AlternarGravacao(ctx);
             }
         }
 

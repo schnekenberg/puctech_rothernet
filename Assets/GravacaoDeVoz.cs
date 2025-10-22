@@ -2,18 +2,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.IO;
 
+[RequireComponent(typeof(UploadDoAudio))]
 public class GravacaoDeVoz : MonoBehaviour
 {
     public InputActionProperty recordButton;
-    private AudioClip AudioGravado;
+    private AudioClip audioGravado;
     private UploadDoAudio upload;
     private bool gravando = false;
-    public bool gravado = false;
     private string microphoneName;
+    private bool aguardandoResposta = false;
 
     void Start()
     {
-        upload = gameObject.AddComponent<UploadDoAudio>();
+        upload = GetComponent<UploadDoAudio>();
 
         if (Microphone.devices.Length > 0)
         {
@@ -24,45 +25,67 @@ public class GravacaoDeVoz : MonoBehaviour
         {
             Debug.LogError("Microfone não encontrado");
         }
+
+        // Conecta ao DownloadPlay e escuta o fim da resposta da IA
+        DownloadPlay receiver = FindObjectOfType<DownloadPlay>();
+        if (receiver != null)
+        {
+            receiver.AoFinalizarInteracao -= PermitirNovaGravacao; // evitar duplicação
+            receiver.AoFinalizarInteracao += PermitirNovaGravacao;
+        }
     }
 
     void OnEnable()
     {
         recordButton.action.Enable();
-        recordButton.action.performed += AlterarGravacao;
+        recordButton.action.performed += AlternarGravacao;
     }
 
     void OnDisable()
     {
-        recordButton.action.performed -= AlterarGravacao;
+        recordButton.action.performed -= AlternarGravacao;
         recordButton.action.Disable();
     }
 
-    public void AlterarGravacao(InputAction.CallbackContext ctx)
+    public void AlternarGravacao(InputAction.CallbackContext ctx)
     {
-        if (!gravando)
+        if (aguardandoResposta)
         {
-            AudioGravado = Microphone.Start(microphoneName, false, 300, 44100);
-            Debug.Log("Gravação iniciada...");
-            gravando = true;
+            Debug.Log("Aguardando resposta da IA...");
         }
         else
         {
-            Microphone.End(microphoneName);
-            SaveWav("Pedido.wav", AudioGravado);
-            string path = Path.Combine(Application.persistentDataPath, "Pedido.wav");
-            upload.UploadWav(path);
-            Debug.Log("Gravação finalizada e enviada.");
-            gravando = false;
-            gravado = true;
-
-            DownloadPlay receiver = FindObjectOfType<DownloadPlay>();
-            if (receiver != null && gravado == true)
+            if (!gravando)
             {
-                receiver.IniciarConexao();
-                gravado = false;
+                audioGravado = Microphone.Start(microphoneName, false, 300, 44100);
+                Debug.Log("Gravação iniciada...");
+                gravando = true;
+            }
+            else
+            {
+                Microphone.End(microphoneName);
+                SaveWav("Pedido.wav", audioGravado);
+                string path = Path.Combine(Application.persistentDataPath, "Pedido.wav");
+
+                upload.UploadWav(path);
+                Debug.Log("Gravação finalizada e enviada.");
+
+                gravando = false;
+                aguardandoResposta = true;
+
+                DownloadPlay receiver = FindObjectOfType<DownloadPlay>();
+                if (receiver != null)
+                {
+                    receiver.IniciarConexao();
+                }
             }
         }
+    }
+
+    private void PermitirNovaGravacao()
+    {
+        Debug.Log("IA terminou de falar. Você pode gravar novamente.");
+        aguardandoResposta = false;
     }
 
     public static void SaveWav(string filename, AudioClip clip)

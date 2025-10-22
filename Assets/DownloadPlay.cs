@@ -8,19 +8,27 @@ using System.Collections;
 public class DownloadPlay : MonoBehaviour
 {
     private WebSocket websocket;
-    private string audioPath;
     private AudioSource audioSource;
     private bool conectado = false;
+
+    // Evento para avisar que a IA terminou de falar
+    public delegate void InteracaoFinalizada();
+    public event InteracaoFinalizada AoFinalizarInteracao;
+
+    [System.Serializable]
+    public class AudioMessage
+    {
+        public string audio;     // Áudio em base64
+        public bool finished;    // Flag de encerramento da conversa
+    }
 
     public void IniciarConexao()
     {
         if (conectado) return;
         conectado = true;
 
-        audioPath = Path.Combine(Application.persistentDataPath, "audioRecebido.wav");
         audioSource = GetComponent<AudioSource>();
-
-        websocket = new WebSocket("ws://SEU_SERVIDOR:PORTA");
+        websocket = new WebSocket("ws://servidor:porta");
 
         websocket.OnOpen += () =>
         {
@@ -29,7 +37,7 @@ public class DownloadPlay : MonoBehaviour
 
         websocket.OnError += (e) =>
         {
-            Debug.LogError("Erro WebSocket: " + e);
+            Debug.LogError(" Erro WebSocket: " + e);
         };
 
         websocket.OnClose += (e) =>
@@ -39,17 +47,25 @@ public class DownloadPlay : MonoBehaviour
 
         websocket.OnMessage += (bytes) =>
         {
-            File.WriteAllBytes(audioPath, bytes);
-            Debug.Log("Áudio recebido e salvo em: " + audioPath);
-            StartCoroutine(TocarAudio());
+
+            string json = System.Text.Encoding.UTF8.GetString(bytes);
+            AudioMessage mensagem = JsonUtility.FromJson<AudioMessage>(json);
+
+            byte[] audioBytes = System.Convert.FromBase64String(mensagem.audio);
+            string audioPath = Path.Combine(Application.persistentDataPath, "audioRecebido.wav");
+
+            File.WriteAllBytes(audioPath, audioBytes);
+            Debug.Log(" Áudio recebido e salvo em: " + audioPath);
+
+            StartCoroutine(TocarAudio(audioPath, mensagem.finished));
         };
 
         websocket.Connect();
     }
 
-    private IEnumerator TocarAudio()
+    private IEnumerator TocarAudio(string path, bool finished)
     {
-        string uri = "file://" + audioPath;
+        string uri = "file://" + path;
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.WAV))
         {
             yield return www.SendWebRequest();
@@ -64,6 +80,15 @@ public class DownloadPlay : MonoBehaviour
                 audioSource.clip = clip;
                 audioSource.Play();
                 Debug.Log("Reproduzindo áudio...");
+
+                // Espera o áudio terminar antes de liberar nova gravação
+                yield return new WaitForSeconds(clip.length);
+
+                if (finished)
+                {
+                    Debug.Log(" Interação encerrada pelo servidor.");
+                    AoFinalizarInteracao?.Invoke();
+                }
             }
         }
     }

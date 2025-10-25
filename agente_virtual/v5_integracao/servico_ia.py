@@ -2,7 +2,7 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-from memoria import MemoriaConversa
+from agente_virtual.v5_integracao.memoria import MemoriaConversa
 import os
 import threading
 

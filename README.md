@@ -1,4 +1,4 @@
-Bem-vindo ao Rothnet, um restaurante virtual criado para proporcionar uma experiência de atendimento automatizado e amigável via voz. Desenvolvido com Unity, FastAPI, LangChain, ChromaDB e IA da OpenAI, o projeto permite que clientes conversem com um assistente virtual que entende pedidos, responde perguntas e interage em português com áudio gerado automaticamente pelo backend usando WebSockets e FastAPI.
+Bem-vindo ao Projeto Rothernet, um restaurante virtual criado para proporcionar uma experiência de atendimento automatizado e amigável via voz. Desenvolvido com Unity, FastAPI, LangChain, ChromaDB e IA da OpenAI, o projeto permite que clientes conversem com um assistente virtual que entende pedidos, responde perguntas e interage em português com áudio gerado automaticamente pelo backend usando WebSockets e FastAPI.
 
 ### Funcionalidades:
 
@@ -14,7 +14,7 @@ Bem-vindo ao Rothnet, um restaurante virtual criado para proporcionar uma experi
 
 - FastAPI: servidor e WebSockets
 - Unity: captura e reprodução de áudio
-- LangChain + ChromaDB + OpenAI GPT : IA para processamento e geração de linguagem natural
+- LangChain + ChromaDB + OpenAI GPT 4.0 Mini : IA para processamento e geração de linguagem natural
 - TTS (Text-to-Speech): geração de áudio em português
 - OpenAI Whisper: transcrição de áudio para texto
 - SQLAlchemy: gerenciamento de clientes, pedidos e históricos.

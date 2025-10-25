@@ -29,4 +29,4 @@ Bem-vindo ao Rothnet, um restaurante virtual criado para proporcionar uma experi
     - pip install -r requirements.txt
 
 3. Rodar o servidor FastAPI:
-    - uvicorn main:app --reload
+    - Utilize o terminal para rodar o comando: uvicorn main:app --reload

@@ -6,7 +6,7 @@ from database.session import SessionLocal
 from database import crud
 from conversions.txt_to_wav import text_to_wav_pt
 from conversions.wav_to_txt import transcrever_audio
-from ai.ai_logic import ai_respond
+from agente_virtual.v5_integracao.servico_ia import ai_respond
 from utils.conversation_helpers import is_interaction_over
 from getters.get_methods import get_order_id
 from services.ia_service import ServicoIA 
@@ -47,23 +47,34 @@ manager = ConnectionManager()
 os.makedirs("audios/received_audio", exist_ok=True)
 os.makedirs("audios/audio_responses", exist_ok=True)
 
-@app.websocket("/ws/audio/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
+@app.websocket("/ws/audio")
+async def websocket_endpoint(websocket: WebSocket):
     db = SessionLocal()
-    await manager.connect(websocket, client_id)
-    ia = ServicoIA.instance()  # Singleton LangChain AI service
+    await websocket.accept() 
+    ia = ServicoIA.instance()
+    client_id = None
 
     try:
         while True:
             # 1. Recebe áudio do Unity
             audio_bytes = await websocket.receive_bytes()
-            tmp_file_path = f"audios/received_audio/{client_id}.wav"
+            tmp_file_path = f"audios/received_audio/temp.wav"
             with open(tmp_file_path, "wb") as f:
                 f.write(audio_bytes)
 
             # 2. Converte áudio em texto
             user_text = transcrever_audio(tmp_file_path)
             print(f"[{client_id}] User said: {user_text}") #teste
+
+            # Extrai o user id do texto
+            if client_id is None:
+                client_id = get_user_id(user_text) or "unknown_user"
+                await manager.connect(websocket, client_id)
+                # Renomeia o arquivo temporário para client_id
+                final_file_path = f"audios/received_audio/{client_id}.wav"
+                os.rename(tmp_file_path, final_file_path)
+                tmp_file_path = final_file_path
+                print(f"Assigned client_id: {client_id}")
 
             # 3. Cria ou atualiza cliente no banco
             client = crud.get_client(db, client_id)

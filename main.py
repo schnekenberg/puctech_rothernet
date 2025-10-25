@@ -7,8 +7,8 @@ from database import crud
 from conversions.txt_to_wav import text_to_wav_pt
 from conversions.wav_to_txt import transcrever_audio
 from agente_virtual.v5_integracao.servico_ia import ServicoIA
-from getters.get_methods import is_interaction_over
-from getters.get_methods import get_order_id, get_user_id
+from servidor.getters.get_methods import is_interaction_over
+from servidor.getters.get_methods import get_order_id, get_user_id
 from agente_virtual.v5_integracao.memoria import MemoriaConversa
 
 

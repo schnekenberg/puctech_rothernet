@@ -23,7 +23,7 @@ Bem-vindo ao Rothnet, um restaurante virtual criado para proporcionar uma experi
 
 1. Clone o Repositório com qualquer um dos métodos abaixo: 
    - SSH: git clone git@github.com:schnekenberg/puctech_rothernet.git
-   - HTTPS: https://github.com/schnekenberg/puctech_rothernet.git
+   - HTTPS: git clone https://github.com/schnekenberg/puctech_rothernet.git
 
 2. Instalar dependências:
     - pip install -r requirements.txt

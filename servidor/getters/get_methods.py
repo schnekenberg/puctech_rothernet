@@ -1,5 +1,4 @@
 import re
-    
 
 def is_interaction_over(message : str) -> bool:
     message = message.lower().strip()

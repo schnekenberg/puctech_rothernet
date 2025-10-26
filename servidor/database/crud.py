@@ -4,8 +4,8 @@ from datetime import datetime
 # from database.models import Client, Order, Dish, OrderItem
 # from .session import SessionLocal
 
-from database.models import Client, Order, Dish, OrderItem
-from database.session import SessionLocal
+from servidor.database.models import Client, Order, Dish, OrderItem
+from servidor.database.session import SessionLocal
 
 
 #add a new client by cpf and return it

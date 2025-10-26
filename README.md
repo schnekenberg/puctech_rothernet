@@ -1,7 +1,7 @@
 Bem-vindo ao Projeto Rothernet, um restaurante virtual criado para proporcionar uma experiência de atendimento automatizado e amigável via voz. Desenvolvido com Unity, FastAPI, LangChain, ChromaDB e IA da OpenAI, o projeto permite que clientes conversem com um assistente virtual que entende pedidos, responde perguntas e interage em português com áudio gerado automaticamente pelo backend usando WebSockets e FastAPI.
 
 ### Linguagens e Tecnologias Utilizadas:
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 
 ### Desenvolvido por:
 

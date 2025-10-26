@@ -1,5 +1,5 @@
-from database import SessionLocal, crud
-from database.models import Client, Order, Dish, OrderItem
+from servidor.database import SessionLocal, crud
+from servidor.database.models import Client, Order, Dish, OrderItem
 
 
 db = SessionLocal()

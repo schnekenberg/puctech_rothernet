@@ -8,6 +8,7 @@ import threading
 
 # carrega variáveis de ambiente (no .env), ou seja, a chave API da OpenAI
 load_dotenv()
+api_key = os.environ["OPENAI_API_KEY"]
 
 CHROMA_CAMINHO = "chroma"
 

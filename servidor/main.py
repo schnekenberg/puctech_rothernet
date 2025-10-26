@@ -6,10 +6,10 @@ from servidor.database.session import SessionLocal
 from servidor.database import crud
 from servidor.conversions.txt_to_wav import text_to_wav_pt
 from servidor.conversions.wav_to_txt import transcrever_audio
-from servidor.agente_virtual.v5_integracao.servico_ia import ServicoIA
+from agente_virtual.v5_integracao.servico_ia import ServicoIA
 from servidor.getters.get_methods import is_interaction_over
 from servidor.getters.get_methods import get_order_id, get_user_id
-from servidor.agente_virtual.v5_integracao.memoria import MemoriaConversa
+from agente_virtual.v5_integracao.memoria import MemoriaConversa
 
 
 app = FastAPI()

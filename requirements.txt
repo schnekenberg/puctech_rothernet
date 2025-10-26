@@ -9,4 +9,4 @@ psycopg2-binary
 langchain_chroma
 langchain_openai
 langchain.prompts
-
+python==3.12

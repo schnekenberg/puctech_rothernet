@@ -2,7 +2,8 @@ Bem-vindo ao Projeto Rothernet, um restaurante virtual criado para proporcionar 
 
 ### Desenvolvido por:
 
-@GaiaOcean @schnekenberg @Ce-22 @Niikira
+[@GaiaOcean](https://github.com/Gaiaocean) [@schnekenberg](https://github.com/schnekenberg)[@Ce-22](https://github.com/Ce-22)[@Niikira](https://github.com/Niikira) 
+
 
 
 ### Funcionalidades:

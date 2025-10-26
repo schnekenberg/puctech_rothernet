@@ -11,5 +11,5 @@ openai==1.30.0
 psycopg2-binary
 langchain_chroma==0.1.4 # especifica versão
 # langchain_openai==0.1.8 # especifica versão; novo
-langchain-openai==0.0.6 # especifica versão; novo
+langchain-openai==0.1.7 # especifica versão; novo
 # langchain.prompts

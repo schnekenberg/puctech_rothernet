@@ -1,4 +1,4 @@
 from .session import SessionLocal, Base, engine
 from .models import *
 from .models import Client, Order, Dish, OrderItem
-from database import crud,models
+from . import crud,models

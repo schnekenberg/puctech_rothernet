@@ -35,7 +35,7 @@ def get_user_id(message : str) -> str | None:
     if not all_numbers:
         return None
 
-    possible_numbers = [num for num in all_numbers if len(num) <= 11]
+    possible_numbers = [num for num in all_numbers if len(num) <= 20]
     if not possible_numbers:
         return None
 

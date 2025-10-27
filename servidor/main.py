@@ -54,29 +54,30 @@ async def websocket_endpoint(websocket: WebSocket):
     db = SessionLocal()
     await websocket.accept() 
     ia = ServicoIA.instance()
-    client_id = None
+    client_id = "unknown_user"
+    await manager.connect(websocket, client_id)
 
     try:
         while True:
             # 1. Recebe áudio do Unity
             audio_bytes = await websocket.receive_bytes()
-            tmp_file_path = f"audios/received_audio/temp.wav"
+            tmp_file_path = f"audios/received_audio/{client_id}.wav"
             with open(tmp_file_path, "wb") as f:
                 f.write(audio_bytes)
 
             # 2. Converte áudio em texto
             user_text = transcrever_audio(tmp_file_path)
-            print(f"[{client_id}] User said: {user_text}") #teste
-
-            # Extrai o user id do texto
-            if client_id is None:
-                client_id = get_user_id(user_text) or "unknown_user"
+            
+             # Verifica se o user ID foi mencionado agora
+            detected_id = get_user_id(user_text)
+            if detected_id and client_id == "unknown_user":
+                # print(f"[{client_id}] User said: {user_text}") #teste
+                manager.disconnect(client_id)
+                client_id = detected_id
                 await manager.connect(websocket, client_id)
-                # Renomeia o arquivo temporário para client_id
-                final_file_path = f"audios/received_audio/{client_id}.wav"
-                os.rename(tmp_file_path, final_file_path)
-                tmp_file_path = final_file_path
-                print(f"Assigned client_id: {client_id}")
+                new_path = f"audios/received_audio/{client_id}.wav"
+                os.rename(tmp_file_path, new_path)
+
 
             # 3. Cria ou atualiza cliente no banco
             client = crud.get_client(db, client_id)

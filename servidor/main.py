@@ -13,9 +13,6 @@ from agente_virtual.v5_integracao.memoria import MemoriaConversa
 
 
 app = FastAPI()
-@app.get("/") # novo (teste)
-def read_root(): # novo (teste)
-    return {"status": "online", "message": "Servidor WebSocket ativo!"} # novo (teste)
 
 app.add_middleware(
     CORSMiddleware,

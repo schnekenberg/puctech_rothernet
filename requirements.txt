@@ -1,16 +1,68 @@
-# fastapi==0.111.1
-fastapi==0.99.1 # alterado
-uvicorn[standard]==0.23.2
-SQLAlchemy==2.0.22
-TTS==0.22.0
-python-dotenv==1.1.1
-# langchain==0.0.263
-langchain==0.2.16 # novo
-langchain-core==0.2.39 # novo
-langsmith==0.1.113 # novo
-openai==1.30.0
-psycopg2-binary
-langchain_chroma==0.1.4 # especifica versão
-# langchain_openai==0.1.8 # especifica versão; novo
-langchain-openai==0.1.7 # especifica versão; novo
-# langchain.prompts
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+numba==0.59.1
+llvmlite==0.42.0
+
+torch==2.5.1
+torchaudio==2.5.1
+encodec==0.1.1
+soundfile==0.13.1
+soxr==1.0.0
+
+coqui-tts==0.25.0
+coqpit==0.0.17
+gruut==2.4.0
+gruut-ipa==0.13.0
+gruut_lang_en==2.0.1
+gruut_lang_fr==2.0.2
+gruut_lang_es==2.0.1
+gruut_lang_de==2.0.1
+hangul-romanize==0.1.0
+pypinyin==0.55.0
+num2words==0.5.14
+inflect==7.5.0
+Unidecode==1.4.0
+
+langchain==0.3.7
+langchain-core==0.3.17
+langchain-openai==0.2.8
+langchain-chroma==0.1.4
+langchain-community==0.3.7
+chromadb==0.5.17
+openai==1.61.1
+tiktoken==0.7.0
+
+fastapi==0.115.6
+uvicorn==0.32.0
+httptools==0.7.1
+watchfiles==1.1.1
+python-dotenv==1.0.1
+
+SQLAlchemy==2.0.35
+psycopg2-binary==2.9.9
+
+matplotlib==3.9.2
+scikit-learn==1.5.2
+joblib==1.4.2
+threadpoolctl==3.5.0
+
+pydantic==2.9.2
+pydantic-core==2.23.4
+typing_extensions==4.12.2
+packaging==24.1
+
+requests==2.32.3
+aiohttp==3.9.5
+anyio==4.4.0
+charset-normalizer==3.3.2
+protobuf==4.25.3
+grpcio==1.64.1
+markdown-it-py==3.0.0
+Jinja2==3.1.4
+itsdangerous==2.2.0
+Werkzeug==3.0.4
+click==8.1.7
+rich==13.7.1
+tqdm==4.66.4
+regex==2024.9.11
